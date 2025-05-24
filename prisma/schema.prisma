@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication and identification
+model User {
+  id        String   @id @default(uuid())
+  rollNumber String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  groups      GroupMember[]
+  ownedGroups Group[]       @relation("GroupAdmin")
+  sentApplications GroupApplication[] @relation("Applicant")
+}
+
+// Class rollNumber range validation
+model ClassRollRange {
+  id        String @id @default(uuid())
+  className String @unique
+  minRoll   Int
+  maxRoll   Int
+}
+
+// Group model for team formation
+model Group {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  admin     User   @relation("GroupAdmin", fields: [adminId], references: [id], onDelete: Cascade)
+  adminId   String
+  members   GroupMember[]
+  applications GroupApplication[]
+}
+
+// GroupMember model to track group memberships
+model GroupMember {
+  id        String   @id @default(uuid())
+  joinedAt  DateTime @default(now())
+
+  // Relations
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  group     Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+
+  @@unique([userId, groupId])
+}
+
+// GroupApplication model for join requests
+model GroupApplication {
+  id        String   @id @default(uuid())
+  notes     String?
+  status    ApplicationStatus @default(PENDING)
+  responseNote String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  applicant User   @relation("Applicant", fields: [applicantId], references: [id], onDelete: Cascade)
+  applicantId String
+  group     Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+
+  @@unique([applicantId, groupId])
+}
+
+// Application status enum
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

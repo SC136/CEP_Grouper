@@ -1,0 +1,86 @@
+/* Custom fixes for UI visibility issues */
+
+/* Make input text clearly visible */
+input {
+  color: #000000 !important; 
+  background-color: #ffffff !important;
+  border-color: #d1d5db !important;
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Style placeholder text */
+input::placeholder {
+  color: #9ca3af !important;
+  opacity: 0.8 !important;
+  font-weight: 400 !important;
+}
+
+/* Fix text contrast for all headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+/* Improve table readability */
+th {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  background-color: #f3f4f6 !important;
+  border-bottom: 2px solid #e5e7eb !important;
+}
+
+tbody tr:hover {
+  background-color: #f9fafb !important;
+}
+
+/* Improve input focus states */
+input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* Ensure buttons have pointer cursor */
+button {
+  cursor: pointer !important;
+}
+
+/* Fix for input text visibility */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input:not([type]) {
+  color: black !important;
+  -webkit-text-fill-color: black !important;
+  font-weight: 500 !important;
+}
+
+/* Additional contrast boost for auth pages */
+.max-w-md .mb-6 {
+  color: #000000 !important;
+}
+
+/* Better visibility for header welcome message */
+header .text-sm {
+  color: #1e293b !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+}
+
+header .text-sm .font-medium {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* Improve member list visibility */
+.bg-white .text-sm.text-gray-500 {
+  color: #4b5563 !important;
+  font-weight: 500 !important;
+}
+
+.bg-white .text-sm.font-medium.text-gray-900 {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
