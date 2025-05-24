@@ -25,6 +25,7 @@ We've provided several options for hosting this application for your friends to 
 
 - **Railway (Recommended for beginners)**: See [RAILWAY-DEPLOYMENT.md](./RAILWAY-DEPLOYMENT.md)
 - **Vercel**: See [VERCEL-DEPLOYMENT.md](./VERCEL-DEPLOYMENT.md) and [VERCEL-DEPLOYMENT-FIX.md](./VERCEL-DEPLOYMENT-FIX.md) for troubleshooting
+  - Recent fixes: [GROUP-MEMBER-FIX.md](./GROUP-MEMBER-FIX.md) and [GROUP-APPLICATION-FIX.md](./GROUP-APPLICATION-FIX.md)
 - **Other Options**: See [HOSTING-OPTIONS.md](./HOSTING-OPTIONS.md) for more deployment options
 
 Once deployed, share the [QUICK-START.md](./QUICK-START.md) guide with your friends to help them get started with using the application.

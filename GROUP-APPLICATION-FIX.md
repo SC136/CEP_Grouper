@@ -43,6 +43,19 @@ The following files were updated to use the correct field name:
 
 The fix maintains the same business logic but updates the field references to match the actual database schema structure. These changes will allow the application to properly query the GroupApplication table.
 
+### Data Transformation for Client Compatibility
+
+In `src/app/api/groups/current/route.ts`, we noted an important transformation:
+
+```typescript
+pendingApplications: isAdmin ? userGroup.applications.map(app => ({
+  ...app,
+  applicant: app.user
+})) : [],
+```
+
+This transformation maps the database field `user` to `applicant` for the frontend. The frontend components still expect to receive an `applicant` field, so this transformation maintains backward compatibility with the client code.
+
 ## Related Files
 
 The migration from SQLite to PostgreSQL appears to have changed the field name from `applicantId` to `userId`. This can be seen in:
