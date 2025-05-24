@@ -20,10 +20,8 @@ export async function POST(req: NextRequest) {
         { error: "Group name is required" },
         { status: 400 }
       );
-    }
-
-    // Check if group name is already taken
-    const existingGroup = await prisma.group.findUnique({
+    }    // Check if group name is already taken
+    const existingGroup = await prisma.group.findFirst({
       where: { name },
     });
 
