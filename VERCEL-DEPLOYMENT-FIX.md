@@ -17,6 +17,26 @@ We've made the following changes to address the Prisma generation error on Verce
    - Added detailed PostgreSQL database setup instructions
    - Improved the database migration instructions
 
+## Database Provider Switching Solution
+
+We've also added a solution for switching between development (SQLite) and production (PostgreSQL) databases:
+
+1. **Created separate schema files**:
+   - `schema.sqlite.prisma` - For local development
+   - `schema.postgresql.prisma` - For production deployment
+
+2. **Added environment switching scripts**:
+   - `switch-to-dev.ps1` - Switches to SQLite for development
+   - `switch-to-prod.ps1` - Switches to PostgreSQL for production
+
+3. **Added convenience npm scripts**:
+   - `npm run use:dev` - Switch to development environment
+   - `npm run use:prod` - Switch to production environment
+   - `npm run setup:dev` - Set up development environment with migrations
+   - `npm run setup:prod` - Set up production environment with migrations and seed data
+
+For detailed instructions on managing database provider switching, see [DATABASE-SWITCHING.md](./DATABASE-SWITCHING.md).
+
 ## Next Steps for Deployment
 
 1. **Push these changes to your GitHub repository**:

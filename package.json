@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "use:dev": "powershell -ExecutionPolicy Bypass -File ./switch-to-dev.ps1",
+    "use:prod": "powershell -ExecutionPolicy Bypass -File ./switch-to-prod.ps1",
+    "setup:dev": "npm run use:dev && npx prisma migrate dev",
+    "setup:prod": "npm run use:prod && npx prisma migrate deploy && npx prisma db seed"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
