@@ -2,6 +2,14 @@
 
 A web application for creating and joining groups with roll number validation. This platform allows users to form groups of up to 10 members, with features for group creation, joining applications, and roll number validation.
 
+## 🎉 Application Deployed! 
+
+The CEP Grouper application is now live at:
+
+**[https://cep-grouper.vercel.app](https://cep-grouper.vercel.app)**
+
+Share the [DEPLOYED-APP-GUIDE.md](./DEPLOYED-APP-GUIDE.md) with your friends to help them get started using the application.
+
 ## Features
 
 - **User Authentication**: Sign up and sign in with roll number verification
