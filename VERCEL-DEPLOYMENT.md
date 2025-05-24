@@ -6,6 +6,34 @@ This guide provides step-by-step instructions for deploying the CEP Grouper appl
 
 - A [GitHub](https://github.com) account
 - A [Vercel](https://vercel.com) account (you can sign up with your GitHub account)
+- A PostgreSQL database (you can use Neon, Supabase, or any other PostgreSQL provider)
+
+## Important: Fixing Prisma Generation on Vercel
+
+Before deploying, make sure your package.json has the following scripts to avoid Prisma client generation issues:
+
+```json
+"scripts": {
+  "dev": "next dev",
+  "build": "prisma generate && next build",
+  "start": "next start",
+  "lint": "next lint",
+  "postinstall": "prisma generate"
+}
+```
+
+Also, create a `vercel.json` file in your project root with the following content:
+
+```json
+{
+  "buildCommand": "prisma generate && next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
+}
+```
+
+These changes ensure that Prisma generates its client properly during Vercel's build process.
 
 ## Step 1: Push Your Code to GitHub
 
@@ -24,14 +52,45 @@ This guide provides step-by-step instructions for deploying the CEP Grouper appl
 
 ## Step 2: Set Up a PostgreSQL Database
 
-You can use any PostgreSQL provider. Here are some options:
+For production, you'll need a PostgreSQL database. Here are detailed steps for setting up databases with different providers:
 
-- [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres)
-- [Neon](https://neon.tech/) (offers a generous free tier)
-- [Supabase](https://supabase.com/) (includes PostgreSQL)
-- [Railway](https://railway.app/)
+### Option 1: Neon (Recommended for Free Tier)
 
-After setting up your database, make note of your connection string (URL).
+1. Go to [neon.tech](https://neon.tech) and sign up for a free account
+2. Create a new project
+3. Once your project is created, go to the dashboard
+4. In "Connection Details", select "Prisma" from the dropdown
+5. Copy the connection string - it should look like:
+   ```
+   postgresql://[user]:[password]@[endpoint]/[database]?sslmode=require
+   ```
+
+### Option 2: Supabase
+
+1. Go to [supabase.com](https://supabase.com) and sign up for a free account
+2. Create a new project
+3. Go to Settings > Database to find your connection details
+4. Create a connection string in this format:
+   ```
+   postgresql://postgres:[YOUR-PASSWORD]@[YOUR-PROJECT-ID].supabase.co:5432/postgres
+   ```
+
+### Option 3: Vercel Postgres
+
+1. In your Vercel dashboard, go to "Storage"
+2. Click "Create" and select "Postgres"
+3. Follow the setup wizard to create your database
+4. After creation, go to "Connect" tab to find your connection string
+
+### Option 4: Railway
+
+1. Go to [railway.app](https://railway.app) and sign up
+2. Create a new project
+3. Add a PostgreSQL database
+4. Once provisioned, click on the database and go to "Connect"
+5. Copy the Prisma connection string
+
+After setting up your database, securely store your connection string - you'll need it for the next step.
 
 ## Step 3: Deploy to Vercel
 
@@ -49,25 +108,64 @@ After setting up your database, make note of your connection string (URL).
 
 ## Step 4: Run Database Migrations
 
-After your initial deployment, you need to set up your database:
+After your initial deployment, you need to set up your database schema and seed it with initial data. There are two ways to do this:
 
-1. In the Vercel dashboard, go to your project
-2. Click on "Deployments"
-3. Find your latest deployment and click on it
-4. Go to the "Functions" tab
-5. Click "View Function Logs"
-6. You may see database connection errors
+### Option 1: Using Vercel CLI (Recommended)
 
-To fix this, you need to run Prisma migrations on your production database:
-
-1. Locally, create a `.env.production` file with your production database URL:
+1. Install the Vercel CLI locally:
+   ```powershell
+   npm install -g vercel
    ```
+
+2. Log in to Vercel from the CLI:
+   ```powershell
+   vercel login
+   ```
+
+3. Link your local project to the Vercel project:
+   ```powershell
+   vercel link
+   ```
+
+4. Pull the production environment variables to your local machine:
+   ```powershell
+   vercel env pull .env.production
+   ```
+
+5. Run the database migrations:
+   ```powershell
+   npx prisma migrate deploy
+   ```
+
+6. Seed the database with initial class roll number ranges:
+   ```powershell
+   npx prisma db seed
+   ```
+
+### Option 2: Using Direct Database Connection
+
+If you have direct access to your PostgreSQL database:
+
+1. Create a `.env.production` file with your production database URL:
+   ```plaintext
    DATABASE_URL=your_production_db_connection_string
    ```
+
 2. Run the migration and seed commands:
-   ```
-   npx prisma migrate deploy --preview-feature
+   ```powershell
+   npx prisma migrate deploy
    npx prisma db seed
+   ```
+
+### Troubleshooting Database Migrations
+
+If you're having issues with migrations:
+
+1. Verify that your PostgreSQL connection string is correct
+2. Make sure your database user has the necessary permissions
+3. Check the Prisma logs for detailed error messages:
+   ```powershell
+   npx prisma migrate deploy --verbose
    ```
 
 ## Step 5: Verify Your Deployment

@@ -16,7 +16,7 @@ A web application for creating and joining groups with roll number validation. T
 We've provided several options for hosting this application for your friends to use:
 
 - **Railway (Recommended for beginners)**: See [RAILWAY-DEPLOYMENT.md](./RAILWAY-DEPLOYMENT.md)
-- **Vercel**: See [VERCEL-DEPLOYMENT.md](./VERCEL-DEPLOYMENT.md)
+- **Vercel**: See [VERCEL-DEPLOYMENT.md](./VERCEL-DEPLOYMENT.md) and [VERCEL-DEPLOYMENT-FIX.md](./VERCEL-DEPLOYMENT-FIX.md) for troubleshooting
 - **Other Options**: See [HOSTING-OPTIONS.md](./HOSTING-OPTIONS.md) for more deployment options
 
 Once deployed, share the [QUICK-START.md](./QUICK-START.md) guide with your friends to help them get started with using the application.
