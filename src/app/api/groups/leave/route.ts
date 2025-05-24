@@ -19,17 +19,17 @@ export async function POST(req: NextRequest) {
         { error: "Group ID is required" },
         { status: 400 }
       );
-    }
-
-    // Check if user is a member of the group
-    const membership = await prisma.groupMember.findFirst({
+    }    // Check if user is a member of the group
+    const user = await prisma.user.findUnique({
       where: {
-        userId: session.user.id,
-        groupId,
+        id: session.user.id,
+      },
+      select: {
+        groupId: true,
       },
     });
 
-    if (!membership) {
+    if (user?.groupId !== groupId) {
       return NextResponse.json(
         { error: "You are not a member of this group" },
         { status: 400 }
@@ -46,23 +46,24 @@ export async function POST(req: NextRequest) {
         { error: "Group not found" },
         { status: 404 }
       );
-    }
-
-    // Start a transaction
+    }    // Start a transaction
     await prisma.$transaction(async (tx) => {
-      // Delete the user's membership
-      await tx.groupMember.delete({
+      // Remove user from group
+      await tx.user.update({
         where: {
-          id: membership.id,
+          id: session.user.id,
+        },
+        data: {
+          groupId: null,
         },
       });
 
       // If user is the admin, either delete the group or transfer admin status
       if (group.adminId === session.user.id) {
         // Check if there are any other members
-        const otherMembers = await tx.groupMember.findMany({
+        const otherMembers = await tx.user.findMany({
           where: {
-            groupId,
+            groupId: groupId,
           },
         });
 
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
               id: groupId,
             },
             data: {
-              adminId: newAdmin.userId,
+              adminId: newAdmin.id,
             },
           });
         }

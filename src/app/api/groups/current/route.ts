@@ -9,69 +9,74 @@ export async function GET(req: NextRequest) {
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }    // Find user's group
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      select: {
+        groupId: true,
+      },
+    });
+
+    if (!user?.groupId) {
+      return NextResponse.json(null);
     }
 
-    // Find user's group memberships
-    const memberships = await prisma.groupMember.findMany({
+    // Get the group details
+    const userGroup = await prisma.group.findUnique({
       where: {
-        userId: session.user.id,
+        id: user.groupId,
       },
       include: {
-        group: {
+        admin: {
+          select: {
+            id: true,
+            name: true,
+            rollNumber: true,
+          },
+        },
+        members: {
+          select: {
+            id: true,
+            name: true,
+            rollNumber: true,
+          }
+        },
+        applications: {
+          where: {
+            status: "PENDING",
+          },
           include: {
-            admin: {
+            user: {
               select: {
                 id: true,
                 name: true,
                 rollNumber: true,
               },
             },
-            members: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    name: true,
-                    rollNumber: true,
-                  },
-                },
-              },
-            },
-            applications: {
-              where: {
-                status: "PENDING",
-              },
-              include: {
-                applicant: {
-                  select: {
-                    id: true,
-                    name: true,
-                    rollNumber: true,
-                  },
-                },
-              },
-            },
           },
         },
       },
-    });    if (memberships.length === 0) {
+    });
+
+    if (!userGroup) {
       return NextResponse.json(null);
     }
-
-    // Just return the first group (users should only be in one group)
-    const userGroup = memberships[0].group;
     
     // Check if the current user is the admin
     const isAdmin = userGroup.adminId === session.user.id;
-    
-    // Format the response
+      // Format the response
     const result = {
       id: userGroup.id,
       name: userGroup.name,
       admin: userGroup.admin,
-      members: userGroup.members.map(member => member.user),
+      members: userGroup.members,
       isUserAdmin: isAdmin,
-      pendingApplications: isAdmin ? userGroup.applications : [],
+      pendingApplications: isAdmin ? userGroup.applications.map(app => ({
+        ...app,
+        applicant: app.user
+      })) : [],
     };
 
     return NextResponse.json(result);

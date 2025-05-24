@@ -51,9 +51,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (status === "APPROVED") {
-      // Check if group is full
-      const memberCount = await prisma.groupMember.count({
+    if (status === "APPROVED") {      // Check if group is full
+      const memberCount = await prisma.user.count({
         where: { groupId: application.groupId },
       });
 
@@ -73,12 +72,12 @@ export async function POST(req: NextRequest) {
             status,
             responseNote,
           },
-        });
-
-        // Add user to group
-        await tx.groupMember.create({
+        });        // Add user to group
+        await tx.user.update({
+          where: {
+            id: application.userId
+          },
           data: {
-            userId: application.applicantId,
             groupId: application.groupId,
           },
         });

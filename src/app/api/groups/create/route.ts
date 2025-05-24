@@ -30,9 +30,7 @@ export async function POST(req: NextRequest) {
         { error: "Group name is already taken" },
         { status: 409 }
       );
-    }
-
-    // Create group transaction
+    }    // Create group transaction
     const result = await prisma.$transaction(async (tx) => {
       // Create the group with the current user as admin
       const group = await tx.group.create({
@@ -41,13 +39,11 @@ export async function POST(req: NextRequest) {
           adminId: session.user.id,
         },
       });
-
-      // Add the admin as a member
-      await tx.groupMember.create({
-        data: {
-          userId: session.user.id,
-          groupId: group.id,
-        },
+      
+      // Update the user to be a member of this group
+      await tx.user.update({
+        where: { id: session.user.id },
+        data: { groupId: group.id }
       });
 
       return group;

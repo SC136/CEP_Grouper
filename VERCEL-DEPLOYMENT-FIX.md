@@ -2,6 +2,8 @@
 
 ## Important Changes Made to Fix Deployment Error
 
+**NEW FIX (May 25, 2025)**: We've addressed an additional error related to the `GroupMember` model. For details, see [GROUP-MEMBER-FIX.md](./GROUP-MEMBER-FIX.md).
+
 We've made the following changes to address the Prisma generation error on Vercel:
 
 1. **Updated `package.json`**:

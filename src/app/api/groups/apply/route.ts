@@ -46,21 +46,22 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }    
-    
-    // Check if user is already a member
-    const existingMembership = await prisma.groupMember.findFirst({
+      // Check if user is already a member
+    const existingUser = await prisma.user.findUnique({
       where: {
-        userId: session.user.id,
-        groupId,
+        id: session.user.id,
+      },
+      select: {
+        groupId: true,
       },
     });
 
-    if (existingMembership) {
+    if (existingUser?.groupId === groupId) {
       return NextResponse.json(
         { error: "You are already a member of this group" },
         { status: 400 }
       );
-    }    try {
+    }try {
       // Try to handle all application scenarios in a transaction
       return await prisma.$transaction(async (tx) => {
         // Check if user already has a pending application

@@ -9,19 +9,17 @@ export async function GET(req: NextRequest) {
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Get user's group memberships
-    const userMemberships = await prisma.groupMember.findMany({
+    }    // Get user's current group
+    const user = await prisma.user.findUnique({
       where: {
-        userId: session.user.id,
+        id: session.user.id,
       },
       select: {
         groupId: true,
       },
     });
 
-    const userGroupIds = userMemberships.map((m) => m.groupId);
+    const userGroupIds = user?.groupId ? [user.groupId] : [];
 
     // Get user's pending applications
     const pendingApplications = await prisma.groupApplication.findMany({
