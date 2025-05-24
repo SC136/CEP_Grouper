@@ -9,12 +9,10 @@ export async function GET(req: NextRequest) {
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Get user's application history with group and admin details
+    }    // Get user's application history with group and admin details
     const applications = await prisma.groupApplication.findMany({
       where: {
-        applicantId: session.user.id,
+        userId: session.user.id,
       },
       include: {
         group: {

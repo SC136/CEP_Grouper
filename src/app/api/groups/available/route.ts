@@ -19,12 +19,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const userGroupIds = user?.groupId ? [user.groupId] : [];
-
-    // Get user's pending applications
+    const userGroupIds = user?.groupId ? [user.groupId] : [];    // Get user's pending applications
     const pendingApplications = await prisma.groupApplication.findMany({
       where: {
-        applicantId: session.user.id,
+        userId: session.user.id,
         status: "PENDING",
       },
       select: {

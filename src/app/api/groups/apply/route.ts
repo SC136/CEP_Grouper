@@ -63,11 +63,10 @@ export async function POST(req: NextRequest) {
       );
     }try {
       // Try to handle all application scenarios in a transaction
-      return await prisma.$transaction(async (tx) => {
-        // Check if user already has a pending application
+      return await prisma.$transaction(async (tx) => {        // Check if user already has a pending application
         const pendingApplication = await tx.groupApplication.findFirst({
           where: {
-            applicantId: session.user.id,
+            userId: session.user.id,
             groupId,
             status: "PENDING", 
           },
@@ -79,11 +78,10 @@ export async function POST(req: NextRequest) {
             { status: 400 }
           );
         }
-        
-        // Check for any existing application (rejected or approved)
+          // Check for any existing application (rejected or approved)
         const existingApplication = await tx.groupApplication.findFirst({
           where: {
-            applicantId: session.user.id,
+            userId: session.user.id,
             groupId,
           },
         });
@@ -101,12 +99,10 @@ export async function POST(req: NextRequest) {
           });
           
           return NextResponse.json(updatedApplication, { status: 200 });
-        }
-
-        // If no existing application, create a new one
+        }        // If no existing application, create a new one
         const application = await tx.groupApplication.create({
           data: {
-            applicantId: session.user.id,
+            userId: session.user.id,
             groupId,
             notes: notes || undefined,
           },
@@ -117,14 +113,12 @@ export async function POST(req: NextRequest) {
     } catch (transactionError) {
       // Special handling for the unique constraint violation, which might happen if a user
       // was previously in the group, then left, and is now trying to apply again
-      console.error("Transaction error:", transactionError);
-      
-      // Delete any existing application and create a new one
+      console.error("Transaction error:", transactionError);        // Delete any existing application and create a new one
       try {
         // First, try to delete any existing application
         await prisma.groupApplication.deleteMany({
           where: {
-            applicantId: session.user.id,
+            userId: session.user.id,
             groupId,
           },
         });
@@ -132,7 +126,7 @@ export async function POST(req: NextRequest) {
         // Then create a new application
         const newApplication = await prisma.groupApplication.create({
           data: {
-            applicantId: session.user.id,
+            userId: session.user.id,
             groupId,
             notes: notes || undefined,
           },
