@@ -83,14 +83,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="w-full bg-gray-800 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p>
-            CEP Grouper © {new Date().getFullYear()}
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
