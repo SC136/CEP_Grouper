@@ -36,7 +36,7 @@ export default function RootLayout({
             </main>
             <footer className="bg-white shadow-inner py-4 border-t">
               <div className="container mx-auto text-center text-gray-600 font-medium">
-                Made with <span className="text-red-500">❤️</span> by SC
+                Made with <span className="text-red-500">❤️</span> by <a href="https://swarchuri.me" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">SC</a>
               </div>
             </footer>
           </div>
